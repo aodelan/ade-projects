@@ -1,0 +1,107 @@
+Sainsburys Technical Questions.
+
+Utilising the chef knife command:
+
+a. knife create node1.
+
+The accompanying JSON:
+
+"json_class":  "Chef: Node",
+"chef_type": "node
+"default_attributes" : {
+"nginz" : {
+...
+"run_list": [
+"recipe [nginx]",
+"role [webserver]"
+],
+
+}
+
+knife create node2
+
+The accompanying JSON:
+
+"json_class":  "Chef: Node",
+"chef_type": "node"
+"default_attributes" : {
+"jboss" : {
+...
+"run_list": [
+"recipe [jboss]",
+"role [appserver]"
+],
+}
+
+knofe create node3
+
+I will assume the 2 app servers are JBoss.
+
+The accompanying JSON:
+
+"json_class":  "Chef: Node",
+"chef_type": "node"
+"default_attributes" : {
+"jboss" : {
+...
+"run_list": [
+"recipe [jboss]",
+"role [appserver]"
+],
+}
+}
+
+The b Question:
+
+knife ssh -x ade chef_environment:DEV1 AND role:DeployApp
+"sudo -u root chef-client -l info"
+
+(The role DeployApp is defined in a chef cookbook)
+
+{
+"name": "DeployApp",
+"json_class" : "Chef::Role",
+"chef_type": "role",
+"run_list": [
+"recipe (jboss:: deployjboss)"
+]
+env_run_lists": {
+}
+...
+}
+
+
+Recipe for the nginx deploy:
+
+{
+"name": "Nginx",
+"json_class" : "Chef::Role",
+"chef_type": "role",
+"run_list": [
+"recipe (nginx:: deployNginx)"
+]
+env_run_lists": {
+}
+...
+}
+
+deployNginx would contain the nginx deploy command. It could be "wget http://...nginx" and then include the Balancer directives to round robin between the 2 application servers.
+
+I would us the chef foodcritic command against the cookbook containing the deployNginx to test the round robin.
+
+
+Concerning the sample code:
+
+I would introduce variables, resources and operations;
+
+action, run, execute.
+
+The execute operation will be able to  give the response "Hi there, I'm served from <application node hostname>"
+Hostname is the hostname of the linux server serving the requests at a point in time.
+
+To share my work on a public git repo:
+
+I create my README.rd in my local drectory to include with the other cookbooks in mmy local director
+
+Then type:
+git remote add mycode https://github.com/aodelan/ade-projects.git
